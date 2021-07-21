@@ -24,8 +24,13 @@ public class UniversitasService {
     	  return jr.findAll();
       }
       
-      public List<UniversitasModel> readUniversitas() {
-    	  return ur.findAll();
+      public List<UniversitasModel> readUniversitas(String jenis){
+          try {
+        	  return ur.searchByJenis(jenis.substring(1, jenis.length()-1));
+          }
+          catch(NullPointerException e) {
+        	  return ur.findAll();
+          }
       }
       
       public void create(UniversitasModel um) {
@@ -33,6 +38,7 @@ public class UniversitasService {
       }
       
       public void edit(UniversitasModel um) {
+          um.setJenisUniversitas(um.getJenisUniversitas().replace('-', ' '));
     	  ur.save(um);
       }
       

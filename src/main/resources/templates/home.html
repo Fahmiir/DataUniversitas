@@ -11,6 +11,13 @@
 <body>
     <div id="button">
            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addModal">Add</button>
+    </div>   
+    <div>
+         <select name="jenis" id="jenis">
+              <option value="All">All</option>
+              <option name="selectedJenisUniversitas" id="selectedJenisUniversitas" th:each="jenisModel : ${ListJenisModel}" th:value="${jenisModel.jenis}" th:text="${jenisModel.jenis}"></option>
+         </select>
+         <input type="button" class="btn btn-secondary" value="Search" id="searchButton"></button>
     </div>
     <div class="modal fade" id="addModal" role="dialog">
          <div class="modal-dialog">
@@ -65,8 +72,8 @@
                    </div>
                         <ul style="list-style-type: none">
                              <li th:each="jenisModel: ${ListJenisModel}">
-                                <input type="radio" name="editJenisUniversitas" id="editJenisUniversitas" th:value="${jenisModel.jenis}" />
-                                <label th:for="${jenisModel.jenis}" th:text="${jenisModel.jenis}" ></label>  
+                                <input type="radio" name="editJenisUniversitas" th:value="${jenisModel.jenis.replace(' ','-')}" />
+                                <label th:for="${jenisModel.jenis}" th:text="${jenisModel.jenis}" name="labelJenisUniversitas"></label>  
                             </li>
                         </ul>                            
                         <br>
@@ -107,13 +114,21 @@
               <td>Delete</td>
               <td>View</td>
            </tr>
-           <tr th:each="universitasModel:${ListUniversitasModel}" class="row-select">
+           <tr th:each="universitasModel:${ListUniversitasModel}" class="row-select" id="all">
               <td class="Id" style="display:none"><a th:text="${universitasModel.Id}"></a></td>
               <td class="NamaUniversitas"><a th:text="${universitasModel.NamaUniversitas}"></a></td>
               <td class="JenisUniversitas"><a th:text="${universitasModel.JenisUniversitas}"></a></td>
-              <td><Button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editModal">Edit</Button></td>
-              <td><Button type="button" class="btn btn-secondary" onClick="checkBox2()">Delete</Button></td>
-              <td><Button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#viewModal" onClick="checkBox3()">View</Button></td>
+              <td><Button type="button" class="btn btn-secondary editButton" data-toggle="modal" data-target="#editModal">Edit</Button></td>
+              <td><Button type="button" class="btn btn-secondary deleteButton">Delete</Button></td>
+              <td><Button type="button" class="btn btn-secondary viewButton" data-toggle="modal" data-target="#viewModal">View</Button></td>
+           </tr>
+           <tr th:each="universitasModel:${ListUniversitasModel}" class="row-select" id="search"  style="display: none">
+              <td class="Id" style="display:none"><a th:text="${universitasModel.Id}"></a></td>
+              <td class="NamaUniversitas"><a th:text="${universitasModel.NamaUniversitas}"></a></td>
+              <td class="JenisUniversitas"><a th:text="${universitasModel.JenisUniversitas}"></a></td>
+              <td><Button type="button" class="btn btn-secondary editButton" data-toggle="modal" data-target="#editModal">Edit</Button></td>
+              <td><Button type="button" class="btn btn-secondary deleteButton">Delete</Button></td>
+              <td><Button type="button" class="btn btn-secondary viewButton" data-toggle="modal" data-target="#viewModal">View</Button></td>
            </tr>
        </table>
        <p align="center" style="display: none" id="display"> Tidak ada data untuk ditampilkan</p>
@@ -125,35 +140,12 @@ document.getElementById("display").style="block";
 }
 
 $(document).ready(function(){
-	    var i;
-	    var ListData;
-		$('button').click(function(){
-			i = $(this).closest("tr").index()-1;
-			ListData = [[${ListUniversitasModel}]];
-			var selectedId               = ListData[i].id;
-			var selectedNamaUniversitas  = ListData[i].namaUniversitas;
-			var selectedJenisUniversitas = ListData[i].jenisUniversitas;
-			var mySelect   = document.getElementsByName('editJenisUniversitas');
-			$('#editId').val(selectedId);
-			$('#editNamaUniversitas').val(selectedNamaUniversitas);
-			
-			for(var i = 0;i < mySelect.length;i++){
-				 if(selectedJenisUniversitas == mySelect[i].value){
-					 $("input[name=editJenisUniversitas][value=" + selectedJenisUniversitas + "]").prop('checked', true);
-					 break;
-				 } 
-			}
-		})
-})
-
-   function checkBox2() {
 	    var i ;
 	    var ListData;
-		$('button').click(function(){
+		$(".deleteButton").click(function(){
 			ListData = [[${ListUniversitasModel}]];
 			i = $(this).closest("tr").index()-1;
 			var selectedId = ListData[i].id;
-			alert(idNew);
 			$.ajax({
 				url         : '/DataUniversitas/delete',
 				type        : 'post',
@@ -172,12 +164,14 @@ $(document).ready(function(){
 	             }
 			})
 		}) 
-}
+})	
 
-function checkBox3() {
+
+
+$(document).ready(function(){
 	var i;
 	var ListData;
-	$('button').click(function(){
+	$(".viewButton").click(function(){
 		i = $(this).closest("tr").index()-1;
 		ListData = [[${ListUniversitasModel}]];
 		var selectedNamaUniversitas  = ListData[i].namaUniversitas;
@@ -185,8 +179,55 @@ function checkBox3() {
 		document.getElementById("viewNamaUniversitas").innerHTML  = selectedNamaUniversitas;
 		document.getElementById("viewJenisUniversitas").innerHTML = selectedJenisUniversitas; 
 	})
-}
+})
 
+
+
+
+$(document).ready(function(){
+	   var i;
+       var ListData;    
+       $(".editButton").click(function(){
+	       i = $(this).closest("tr").index()-1;
+	       ListData = [[${ListUniversitasModel}]];
+	       var selectedId               = ListData[i].id;
+	       var selectedNamaUniversitas  = ListData[i].namaUniversitas;
+	       var selectedJenisUniversitas = ListData[i].jenisUniversitas;
+	       var mySelect   = document.getElementsByName('editJenisUniversitas');
+ 	       $('#editId').val(selectedId);
+	       $('#editNamaUniversitas').val(selectedNamaUniversitas); 
+		   for(var i = 0;i < mySelect.length;i++){
+			   if(selectedJenisUniversitas.replace(" ","-") == mySelect[i].value){  
+				 $("input[name=editJenisUniversitas][value="+mySelect[i].value+"]").prop('checked', true);
+				 break; 
+				} 
+			} 
+      })
+	})
+
+$(document).ready(function(){
+	$("#searchButton").click(function(){
+		var selectedJenisUniversitas = $('#jenis option:selected').val();
+		alert(selectedJenisUniversitas);
+	    $.ajax({
+		url         : '/DataUniversitas/',
+	    type        : 'post',
+		data        : JSON.stringify(selectedJenisUniversitas),
+		async       : false,
+		dataType    : "text",
+		contentType : "application/json",
+		success     : function (result) {
+					     alert("sukses cari data");
+/* 				 	     $(document).ajaxStop(function(){
+	    				 window.location.reload();
+	    				     }); */  
+				}, 
+		error      : function (XMLHttpRequest, textStatus, errorThrown) {
+	                     alert("tidak sukses cari data");     
+	             }	    	
+	    })
+	})
+}) 
 
 
 
