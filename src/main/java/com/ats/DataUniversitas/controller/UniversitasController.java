@@ -25,14 +25,12 @@ public class UniversitasController {
 	@Autowired
 	UniversitasService us;
 
-	@RequestMapping(value = "/", produces = "text/plain")
-	public String menuHome(Model model, @RequestBody(required = false) String selectedJenisUniversitas) {
+	@RequestMapping(value = "/")
+	public String menuHome(Model model, @RequestParam(value="jenis",required=false,defaultValue="") String jenis) {
 		List<JenisModel> jm = new ArrayList<>();
 		List<UniversitasModel> um = new ArrayList<>();
-		System.out.println("controller 2 " + selectedJenisUniversitas);
 		jm = us.read();
-		um = us.readUniversitas(selectedJenisUniversitas);
-		System.out.println("Panjang um adalah " + um.size());
+		um = us.readUniversitas(jenis);
 		model.addAttribute("ListJenisModel", jm);
 		model.addAttribute("ListUniversitasModel", um);
 		return "home";
@@ -40,8 +38,12 @@ public class UniversitasController {
 
 	
 	  @RequestMapping(value="/search") 
-	  public String menuSearch(@RequestBody(required=false) String selectedJenisUniversitas) {
+	  public String menuSearch(Model model,@RequestBody(required=false) String selectedJenisUniversitas) {
 	  System.out.println("search "+selectedJenisUniversitas); 
+	  List<UniversitasModel> um = new ArrayList<>();
+	  um = us.searchUniversitas(selectedJenisUniversitas);
+	  System.out.println("panjang um adalah "+um.size());
+	  model.addAttribute("ListUniversitasModel", um);
 	  return "redirect:/"; 
 	}
 	 

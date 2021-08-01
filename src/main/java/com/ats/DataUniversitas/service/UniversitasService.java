@@ -24,13 +24,23 @@ public class UniversitasService {
     	  return jr.findAll();
       }
       
-      public List<UniversitasModel> readUniversitas(String jenis){
-          try {
-        	  return ur.searchByJenis(jenis.substring(1, jenis.length()-1));
-          }
-          catch(NullPointerException e) {
-        	  return ur.findAll();
-          }
+      public List<UniversitasModel> readUniversitas(){
+    	  return ur.findAll();
+      }
+      
+	
+	  public List<UniversitasModel> readUniversitas(String jenis){ 
+		  if(jenis.isEmpty() || jenis.equalsIgnoreCase("All")) {
+			  return ur.findAll();
+		     }
+		  else {
+			  return ur.searchByJenis(jenis);
+		     }
+		  }
+	 
+      
+      public List<UniversitasModel> searchUniversitas(String jenis){
+    	  return ur.searchByJenis(jenis.substring(1, jenis.length()-1));
       }
       
       public void create(UniversitasModel um) {

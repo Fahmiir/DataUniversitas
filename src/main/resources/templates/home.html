@@ -13,11 +13,13 @@
            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addModal">Add</button>
     </div>   
     <div>
-         <select name="jenis" id="jenis">
-              <option value="All">All</option>
-              <option name="selectedJenisUniversitas" id="selectedJenisUniversitas" th:each="jenisModel : ${ListJenisModel}" th:value="${jenisModel.jenis}" th:text="${jenisModel.jenis}"></option>
-         </select>
-         <input type="button" class="btn btn-secondary" value="Search" id="searchButton"></button>
+         <form th:action="@{/}">
+              <select name="jenis" id="jenis">
+                    <option value="All">All</option>
+                    <option name="selectedJenisUniversitas" id="selectedJenisUniversitas" th:each="jenisModel : ${ListJenisModel}" th:value="${jenisModel.jenis}" th:text="${jenisModel.jenis}"></option>
+              </select>
+         <input type="submit" class="btn btn-secondary" value="Search" id="searchButton"></button>
+         </form>
     </div>
     <div class="modal fade" id="addModal" role="dialog">
          <div class="modal-dialog">
@@ -205,7 +207,7 @@ $(document).ready(function(){
       })
 	})
 
-$(document).ready(function(){
+/* $(document).ready(function(){
 	$("#searchButton").click(function(){
 		var selectedJenisUniversitas = $('#jenis option:selected').val();
 		alert(selectedJenisUniversitas);
@@ -218,9 +220,6 @@ $(document).ready(function(){
 		contentType : "application/json",
 		success     : function (result) {
 					     alert("sukses cari data");
-/* 				 	     $(document).ajaxStop(function(){
-	    				 window.location.reload();
-	    				     }); */  
 				}, 
 		error      : function (XMLHttpRequest, textStatus, errorThrown) {
 	                     alert("tidak sukses cari data");     
@@ -228,7 +227,7 @@ $(document).ready(function(){
 	    })
 	})
 }) 
-
+ */
 
 
 </script>
